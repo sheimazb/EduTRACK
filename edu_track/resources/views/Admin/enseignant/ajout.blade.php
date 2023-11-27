@@ -95,7 +95,7 @@
                                                 <div class="form-group mb-25">
                                                     <label for="name2">Prénom</label>
                                                     <input type="text" class="form-control" name="prenom"
-                                                           placeholder="sample@email.com"
+                                                           placeholder="yyyy"
                                                            value="{{$enseignant->prenom??''}}">
                                                 </div>
                                                 <div class="form-group mb-25 form-group-calender">

@@ -128,29 +128,23 @@
                 </li>
                 <!-- ends: .nav-notification -->
 
-                    <li class="nav-author">
-                        <div class="dropdown-custom">
-
-                            <a href="javascript:;" class="nav-item-toggle"><img  src="{{asset($enseignants->path)}}"
-                                                                                alt="" class="rounded-circle"></a>
-
-                            <div class="dropdown-wrapper">
-                                <div class="nav-author__info">
-
-                                        <div class="author-img">
-                                            <img src="{{asset($enseignants->path)}}" alt="hjh"
-                                                 class="rounded-circle">
-                                        </div>
-
-                                    <div>
-                                        <h6>{{$enseignants->nom}}, {{$enseignants->prenom}}</h6>
-                                        <span>{{$enseignants->titre}}</span>
-                                    </div>
+                <li class="nav-author">
+                    <div class="dropdown-custom">
+                        <a href="javascript:;" class="nav-item-toggle"><img src="{{asset($enseignants->path)}}" alt="" class="rounded-circle"></a>
+                        <div class="dropdown-wrapper">
+                            <div class="nav-author__info">
+                                <div class="author-img">
+                                    <img src="{{asset($enseignants->path)}}" alt="hjh" class="rounded-circle">
                                 </div>
-                                <div class="nav-author__options">
-                                    <ul>
-                                        <li>
-                                            <a href="{{route('profile.admin')}}">
+                                <div>
+                                    <h6>{{$enseignants->nom}} {{$enseignants->prenom}}</h6>
+                                    <span>{{$enseignants->titre}}</span>
+                                </div>
+                            </div>
+                            <div class="nav-author__options">
+                                <ul>
+                                    <li>
+                                            <a href="">
                                                 <span data-feather="user"></span> Profile</a>
                                         </li>
                                         <li>

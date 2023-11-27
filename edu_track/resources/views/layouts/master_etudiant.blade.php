@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 
     <!-- inject:css-->
+    <link rel="stylesheet" href="{{asset('libs/bootstrap-select/dist/css/bootstrap-select.min.css')}}">
 
     <link rel="stylesheet" href="{{asset('css/plugin.min.css')}}">
 
@@ -20,6 +21,12 @@
     <!-- endinject -->
 
     <link rel="icon" type="image/png" sizes="16x16" href="img/favicon.png">
+    <script src="{{asset('js/jquery.js')}}"></script>
+
+    <link href="{{asset('css/toastr.css')}}" rel="stylesheet">
+    <script src="{{asset('js/toastr.js')}}"></script>
+
+
 
 </head>
 <body class="layout-light side-menu overlayScroll">
@@ -116,11 +123,14 @@
     </div>
 </div>
 
+
 <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDduF2tLXicDEPDMAtC6-NLOekX0A5vlnY"></script>
 <!-- inject:js-->
 <script src="{{asset('js/plugins.min.js')}}"></script>
 <script src="{{asset('js/script.min.js')}}"></script>
-<!-- endinject-->
+<script src="{{asset('libs/bootstrap-select/dist/js/bootstrap-select.min.js')}}"></script>
+<script src="{{asset('libs/bootstrap-select/dist/js/i18n/defaults-*.min.js')}}"></script>
 
+<!-- endinject-->
 
 </html>

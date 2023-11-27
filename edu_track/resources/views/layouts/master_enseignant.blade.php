@@ -21,7 +21,7 @@
     <!-- endinject -->
 
     <link rel="icon" type="image/png" sizes="16x16" href="img/favicon.png">
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="layout-light side-menu overlayScroll">
 @include('includes.header_enseignant')
@@ -31,6 +31,7 @@
 
     @include('includes.Sidebar_enseignant')
     @yield('content')
+    @yield('scripts')
     @include('includes.footer')
 </main>
 <div id="overlayer">

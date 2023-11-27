@@ -6,6 +6,7 @@ use App\Models\Classe;
 use App\Models\Departement;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClasseController extends Controller
 {
@@ -13,7 +14,8 @@ class ClasseController extends Controller
     {
         $departement = Departement::all();
         $classes = Classe::all();
-        return view('Admin.Classe.liste', compact('departement', 'classes'));
+        $admin= Auth::guard('admin')->user();
+        return view('Admin.Classe.liste', compact('departement', 'classes','admin'));
     }
 
     public function store(Request $request)

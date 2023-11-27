@@ -12,18 +12,9 @@
                         <div class="card-body text-center p-0">
 
                             <div class="account-profile border-bottom pt-25 px-25 pb-0 flex-column d-flex align-items-center ">
-                                <div class="ap-img mb-20 pro_img_wrapper">
-                                    <input id="file-upload" type="file" name="fileUpload" class="d-none">
-                                    <label for="file-upload">
-                                        <!-- Profile picture image-->
-                                        <img class="ap-img__main rounded-circle wh-120" src="{{asset('images/chaima.jpeg')}}" alt="profile">
-                                        <span class="cross" id="remove_pro_pic">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                                                </span>
-                                    </label>
-                                </div>
+                                
                                 <div class="ap-nameAddress pb-3">
-                                    <h5 class="ap-nameAddress__title">Chaima zbidi</h5>
+                                    <h5 class="ap-nameAddress__title">{{$admin->nom}} {{$admin->prenom}}</h5>
                                     <p class="ap-nameAddress__subTitle fs-14 m-0">Propriétaire</p>
                                 </div>
                             </div>
@@ -78,17 +69,40 @@
                                             <div class="row justify-content-center">
                                                 <div class="col-xxl-6 col-lg-8 col-sm-10">
                                                     <div class="edit-profile__body mx-lg-20">
-                                                        <form>
-                                                            <div class="form-group mb-20">
+                                                        <form method="post" action="{{route('updateInformation.admin',$admin->id)}}" enctype="multipart/form-data">
+                                                        @csrf 
+                                                        <div class="account-profile border-bottom pt-25 px-25 pb-0 flex-column d-flex align-items-center ">
+                                                        <div class="ap-img mb-20 pro_img_wrapper">
+                                                            <input id="file-upload" type="file" name="fileUpload" class="d-none">
+                                                            <label for="file-upload">
+                                                                <!-- Profile picture image-->
+                                                                <img class="ap-img__main rounded-circle wh-120" src="{{asset($admin->path)}}" alt="profile">
+                                                                <span class="cross" id="remove_pro_pic">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                        </div>
+                                                        <div class="form-group mb-20">
                                                                 <label for="name1">Nom d'Utilisateur</label>
-                                                                <input type="text" class="form-control" id="name1" placeholder="{{$admin->prenom}} {{$admin->nom}}">
+                                                                <input type="text" class="form-control" name="nom" value="{{$admin->prenom}} {{$admin->nom}}">
                                                                
                                                             </div>
                                                             <div class="form-group mb-1">
-                                                                <label for="email45">Email</label>
-                                                                <input type="email" class="form-control" id="email45" placeholder="{{$admin->email}}">
+                                                                <label for="email">Email</label>
+                                                                <input type="email" class="form-control" name="email" value="{{$admin->email}}">
                                                             </div>
+                                                            <div class="button-group d-flex flex-wrap pt-35 mb-35">
 
+
+                                                                <button type="submit" class="btn btn-primary btn-default btn-squared mr-15 text-capitalize">Sauvegarder les modifications
+                                                                </button>
+
+                                                                <button class="btn btn-light btn-default btn-squared fw-400 text-capitalize">Annuler
+                                                                </button>
+
+
+                                                                </div>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -108,17 +122,6 @@
                                                             </button>
 
                                                         </div>
-                                                    </div>
-                                                    <div class="button-group d-flex flex-wrap pt-35 mb-35">
-
-
-                                                        <button class="btn btn-primary btn-default btn-squared mr-15 text-capitalize">Sauvegarder les modifications
-                                                        </button>
-
-                                                        <button class="btn btn-light btn-default btn-squared fw-400 text-capitalize">Annuler
-                                                        </button>
-
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -142,25 +145,49 @@
                                             <div class="row justify-content-center">
                                                 <div class="col-xxl-6 col-lg-8 col-sm-10">
                                                     <div class="edit-profile__body mx-lg-20">
-                                                        <form>
+                                                        <form action="{{route('profile.change.password')}}" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+                                                            @csrf
                                                             <div class="form-group mb-20">
-                                                                <label for="name">old passowrd</label>
-                                                                <input type="text" class="form-control" id="name">
+                                                                <label for="name">Ancien mot de passe</label>
+                                                                <input type="password" class="form-control @error('current_password') is-invalid @enderror" name="current_password" >
+                                                          
+                                                                @error('current_password')
+                                                                    <span class="invalid-feedback" role="alert">
+                                                                        <strong>{{$message}}</strong>
+                                                                    </span>
+                                                                @enderror
+
                                                             </div>
                                                             <div class="form-group mb-1">
-                                                                <label for="password-field">new password</label>
+                                                                <label for="password-field">Nouveau mot de passe</label>
                                                                 <div class="position-relative">
-                                                                    <input id="password-field" type="password" class="form-control pr-50" name="password" value="secret">
+                                                                    <input name="password" type="password" class="form-control pr-50 @error('password') is-invalid @enderror" required value="secret">
                                                                     <span class="fa fa-fw fa-eye-slash text-light fs-16 field-icon toggle-password2"></span>
+                                                                @error('password')
+                                                                    <span class="invalid-feedback" role="alerte">
+                                                                         <strong>{{$message}} </strong>
+                                                                    </span>
+                                                                @enderror
                                                                 </div>
                                                                 <small id="passwordHelpInline" class="text-light fs-13">Minimum
                                                                     6
                                                                     characters
                                                                 </small>
                                                             </div>
+                                                            <div class="form-group mb-20">
+                                                                <label for="name">Confirmez le mot de passe</label>
+                                                                <input type="password" class="form-control @error('confirm_password') is-invalid @enderror"required name="confirm_password" id="confirm_password">
+                                                          
+                                                                @error('confirm_password')
+                                                                    <span class="invalid-feedback" role="alert">
+                                                                        <strong>{{$message}}</strong>
+                                                                    </span>
+                                                                @enderror
+
+                                                            </div>
                                                             <div class="button-group d-flex flex-wrap pt-45 mb-35">
 
-                                                                <button class="btn btn-primary btn-default btn-squared mr-15 text-capitalize">Save Changes
+                                                                <button type="submit" class="btn btn-primary btn-default btn-squared mr-15 text-capitalize">Save Changes
                                                                 </button>
 
                                                                 <button class="btn btn-light btn-default btn-squared fw-400 text-capitalize">cancel
@@ -193,31 +220,46 @@
                                             <div class="row justify-content-center">
                                                 <div class="userDatatable global-shadow border-0 bg-white w-100">
                                                     <div class="tab-pane fade" id="v-pills-profile1" role="tabpanel" aria-labelledby="v-pills-profile-tab1">
-                                                        <form>
-
+                                                        <form action="{{route('ajout.admin')}}" method="post" enctype="multipart/form-data" >
+@csrf
+                                                        <div class="col-sm-6 d-flex aling-items-center">
+                                                                <div class="col-sm-3">
+                                                                        <label for="inputNameIcon" class=" col-form-label color-dark fs-14 fw-500 align-center">Nom</label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                    <input type="text" class="form-control  ih-medium ip-gray radius-xs b-light" name="nom" placeholder="xxx">
+                                                                    
+                                                                    </div><br><br>
+                                                                    <div class="col-sm-3">
+                                                                        <label for="inputNameIcon" class=" col-form-label color-dark fs-14 fw-500 align-center">Prénom</label>
+                                                                    </div>
+                                                                    <div class="col-sm-6">
+                                                                        <input type="text" class="form-control  ih-medium ip-gray radius-xs b-light" name="prenom" placeholder="yyy" >
+                                                                       
+                                                                    </div>
+                                                                   
+                                                                </div>
+<br><br>
                                                                 <div class="col-sm-6 d-flex aling-items-center">
+                                            
                                                                     <div class="col-sm-3">
                                                                         <label for="inputNameIcon" class=" col-form-label color-dark fs-14 fw-500 align-center">E-mail</label>
                                                                     </div>
                                                                     <div class="col-sm-6">
-                                                                    <input type="text" class="form-control  ih-medium ip-gray radius-xs b-light" id="inputNameIcon" placeholder="exemple@gmail.com">
-                                                                    </div>
+                                                                    <input type="text" class="form-control  ih-medium ip-gray radius-xs b-light" name="email" placeholder="exemple@gmail.com">
+                                                                   
+                                                                </div>
+                                            
                                                                     <div class="col-sm-3">
                                                                         <label for="inputNameIcon" class=" col-form-label color-dark fs-14 fw-500 align-center">Mot de passe</label>
                                                                     </div>
                                                                     <div class="col-sm-6">
-                                                                        <input type="password" class="form-control  ih-medium ip-gray radius-xs b-light" id="inputNameIcon"placeholder="mot de passe" >
+                                                                        <input type="password" class="form-control  ih-medium ip-gray radius-xs b-light" name="password" placeholder="mot de passe" >
                                                                     </div>
                                                                     <div class="col-sm-6">
-                                                                        <button style="background-color: #82a641; border-color: rgb(117,143,63) ; margin-top: 10px" type="button" class="btn btn-primary btn-xs btn-squared ">Ajouter</button>
+                                                                        <button style="background-color: #82a641; border-color: rgb(117,143,63) ; margin-top: 10px" type="submit" class="btn btn-primary btn-xs btn-squared ">Ajouter</button>
                                                                     </div>
                                                                 </div>
-<br>
-
-
-
-
-
                                                         </form>
                                                     </div>
 
@@ -240,16 +282,18 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-
+                                                                
+                                                           @foreach($admins as $adm)
                                                             <tr>
                                                                 <td>
                                                                     <div class="userDatatable-content">
-                                                                        chaima zbidi
+                                                                        
+                                                                      {{$adm->nom}}  {{$adm->prenom}}
                                                                     </div>
                                                                 </td>
                                                                 <td>
                                                                     <div class="userDatatable-content">
-                                                                        admin@gmail.com
+                                                                    {{$adm->email}}
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -265,30 +309,7 @@
                                                                 </td>
                                                             </tr>
 
-
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="userDatatable-content">
-                                                                        ghaith ben ali
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="userDatatable-content">
-                                                                        benAlighaith@gmail.com
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="userDatatable-content">
-                                                                        propriétaire
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="userDatatable-content">
-                                                                        <button class="btn btn-danger  btn-xs btn-squared ">Supprimer
-                                                                   </button>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
+                                                        @endforeach
 
                                                             </tbody>
                                                         </table>

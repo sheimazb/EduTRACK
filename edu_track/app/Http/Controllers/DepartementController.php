@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Departement;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DepartementController extends Controller
 {
     public function show(){
         $departements=Departement::all();
-        return view('Admin.departement.liste',['departements'=>$departements]);
+        $admin= Auth::guard('admin')->user();
+        return view('Admin.departement.liste',['departements'=>$departements,'admin'=>$admin]);
     }
     public function create(Request $request){
         try{

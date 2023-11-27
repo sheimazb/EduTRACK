@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ChronometreController;
 use App\Http\Controllers\ClasseController;
 use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\EnseignantController;
@@ -28,6 +29,7 @@ Route::prefix('Administration')->middleware('auth:admin')->group(function (){
     Route::get('/Dashboard-admin',              [AdminController::class, 'show'])->name('admin.dashboard');
 //edit profil admin
     Route::get('/Edit-profile',                 [AdminController::class, 'updateProfile'])->name('profile.admin');
+    Route::post('/Edit-informations/{id}',       [AdminController::class,'updateInformationAdmin'])->name('updateInformation.admin');
 //admin.etudiant
     Route::get('/liste-attente-etudiant',       [EtudiantController::class, 'index'])->name('liste-attente-etudiant');
     Route::get('/etudiant-accepte',             [EtudiantController::class, 'show'])->name('etudiant.accepte');
@@ -45,6 +47,11 @@ Route::prefix('Administration')->middleware('auth:admin')->group(function (){
 //admin.classe
     Route::get('/liste-classes',                [ClasseController::class, 'index'])->name('classes.liste');
     Route::post('/ajout-classe',                [ClasseController::class,'store'])->name('classe.ajout');
+//admin.change password
+Route::post('/change-password',                 [AdminController::class,'changePassword'])->name('profile.change.password');
+//admin.ajout.admin
+Route::post('/ajouter_proprietaire',             [AdminController::class,'CreateAdmin'])->name('ajout.admin');
+
 //admin.logout
     Route::get('/logout',                       [AdminController::class, 'logout'])->name('admin.logout');
 });
@@ -62,13 +69,27 @@ Route::prefix('Enseignant')->middleware('auth:enseignant')->group(function (){
     Route::post('/upload/cours',                    [EnseignantController::class,'uploadCourss'])->name('upload.cours');
     Route::get('/cour/{id}',                        [EnseignantController::class,'showCour'])->name('enseignant.cour');
     Route::get('/logout',                           [EnseignantController::class, 'logout'])->name('enseignant.logout');
+    Route::get('/chronometre',           [ChronometreController::class,'index'])->name('enseignant.chrono');
+    Route::post('/demarrer-chronometre', [ChronometreController::class,'demarrerChronometre'])->name('enseignant.chrono.demarrer');
+    Route::post('/arreter-chronometre', [ChronometreController::class, 'arreterChronometre'])->name('enseignant.chrono.arreter');
+
+
 
 });
-//Tableau de bord Etudiant
-Route::post('/inscrit',                         [EtudiantController::class,'create'])->name('etudiant.inscrit');
 Route::get('/formulaire-préInscription',        [EtudiantController::class,'signIN2'])->name('etudiant.signIN');
-//user verification mail
+Route::post('/inscrit',                         [EtudiantController::class, 'create'])->name('etudiant.inscrit');
 Route::get('/user-verify/{token}',              [EtudiantController::class, 'verify'])->name('user.verify');
+Route::get('token',                             [EtudiantController::class, 'genrateTock'])->name('Token');
+
+//Etudiant section
+Route::prefix('Etudiant')->middleware(['guest:etudiant'])->group(function () {
+    Route::post('/submit-form',                  [AdminController::class,'submit'])->name('submit-Form');
+});
+Route::prefix('Etudiant')->middleware('auth:etudiant')->group(function () {
+//Tableau de bord Etudiant
+   // Route::get('/formulaire-préInscription', [EtudiantController::class, 'signIN2'])->name('etudiant.signIN');
 //tocken
-Route::get('token',                             [EtudiantController::class,'genrateTock'])->name('Token');
-Route::get('/Dashboard-etudiant',               [EtudiantController::class,'tableau'])->name('etudiant.dashboard');
+   Route::get('/Dashboard-etudiant',  [EtudiantController::class, 'tableau'])->name('etudiant.dashboard');
+    Route::get('/logout',                           [EtudiantController::class, 'logout'])->name('etudiant.logout');
+    Route::get('/liste-CR',                      [EtudiantController::class,'showCours'])->name('etudiant.cours');
+});

@@ -157,7 +157,7 @@
                                             <span data-feather="bell"></span> Help</a>
                                     </li>
                                 </ul>
-                                <a href="#" class="nav-author__signout">
+                                <a href="{{route('etudiant.logout')}}" class="nav-author__signout">
                                     <span data-feather="log-out"></span> Sign Out</a>
                             </div>
                         </div>

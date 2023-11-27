@@ -116,7 +116,25 @@
                                                                 <option value="tunis">Tunis</option>
                                                                 <option value="sfax">Sfax</option>
                                                             </select>
-                                                        </div>
+                                                    </div>
+                                                    <h4>3. Veuillez configurer votre information Educatif</h4><br>
+                                                    <div class="user-social-profile mt-40 mb-50">
+                                                        <select class="selectpicker" id="class_ids" name="class_ids[]" >
+                                                            @foreach ($departements as $departement)
+                                                                <optgroup label="{{$departement->nom??''}}"
+                                                                          data-id="{{$departement->id??''}}">
+                                                                    @if(isset($departement->Classes))
+                                                                        @forelse($departement->Classes as $classe)
+                                                                            <option
+                                                                                value="{{($classe->id??'')}}">{{($classe->nom??'')}}</option>
+                                                                        @empty
+                                                                            <option value="0">{{('Aucune class')}}</option>
+                                                                        @endforelse
+                                                                    @endif
+                                                                </optgroup>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
 
                                                     <div class="button-group d-flex pt-3 justify-content-between flex-wrap">
                                                         <button type="submit" class="btn text-white btn-primary btn-default btn-squared text-capitalize m-1">Save &amp; Next <i class="ml-10 mr-0 las la-arrow-right"></i></button>

@@ -23,6 +23,8 @@ class RedirectIfAuthenticated
             return redirect(RouteServiceProvider::ADMIN);
         } elseif (Auth::guard('enseignant')->check()) {
             return redirect(RouteServiceProvider::ENSEIGNANT);
+        }elseif (Auth::guard('etudiant')->check()) {
+            return redirect(RouteServiceProvider::ETUDIANT);
         }
 
         return $next($request);

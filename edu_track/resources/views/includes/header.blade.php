@@ -123,15 +123,14 @@
 
                 <li class="nav-author">
                     <div class="dropdown-custom">
-                        <a href="javascript:;" class="nav-item-toggle"><img src="{{asset('images/author-nav.jpg')}}" alt="" class="rounded-circle"></a>
+                        <a href="javascript:;" class="nav-item-toggle"><img src="{{asset($admin->path)}}" alt="" class="rounded-circle"></a>
                         <div class="dropdown-wrapper">
                             <div class="nav-author__info">
                                 <div class="author-img">
-                                    <img src="img/author-nav.jpg" alt="hjh" class="rounded-circle">
+                                    <img src="{{asset($admin->path)}}" alt="hjh" class="rounded-circle">
                                 </div>
                                 <div>
-                                    <h6>Abdullah Bin Talha</h6>
-                                    <span>UI Designer</span>
+                                    <h6>{{$admin->nom}} {{$admin->prenom}}</h6>
                                 </div>
                             </div>
                             <div class="nav-author__options">

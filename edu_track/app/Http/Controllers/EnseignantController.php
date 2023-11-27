@@ -19,15 +19,17 @@ class EnseignantController extends Controller
 {
     public function index()
     {
+        $admin= Auth::guard('admin')->user();
         $departements = Departement::all();
         $classes = Classe::all();
-        return view('Admin.enseignant.ajout', ['departements' => $departements, 'classes' => $classes]);
+        return view('Admin.enseignant.ajout', ['departements' => $departements, 'classes' => $classes,'admin'=>$admin]);
     }
 
     public function show()
     {
+        $admin= Auth::guard('admin')->user();
         $enseignants = Enseignant::all();
-        return view('Admin.enseignant.consulter', ['enseignants' => $enseignants]);
+        return view('Admin.enseignant.consulter', ['enseignants' => $enseignants,'admin'=>$admin]);
     }
 
     public function detail($id)
@@ -44,14 +46,15 @@ class EnseignantController extends Controller
         $id = Auth::guard('enseignant')->user()->id;
         $enseignants = Enseignant::findOrFail($id);
 
-        return view('Enseignant.Dashboard',['enseignants'=>$enseignants]);
+        return view('Enseignant.Dashboard', ['enseignants' => $enseignants]);
     }
 
     public function showCours()
     {
         $id = Auth::guard('enseignant')->user()->id;
+        $enseignants = Auth::guard('enseignant')->user();
         $cours = Cours::where('ens_id', $id)->get();
-        return view('Enseignant.cours.liste', ['cours' => $cours]);
+        return view('Enseignant.cours.liste', ['cours' => $cours,'enseignants'=>$enseignants]);
     }
 
     public function showCour($id)
@@ -85,9 +88,10 @@ class EnseignantController extends Controller
 
     public function uploadCours()
     {
+        $enseignants = Auth::guard('enseignant')->user();
         $departements = Departement::all();
         $classes = Classe::all();
-        return view('Enseignant.cours.ajout', ['departements' => $departements, 'classes' => $classes]);
+        return view('Enseignant.cours.ajout', ['departements' => $departements, 'classes' => $classes,'enseignants'=>$enseignants]);
     }
 
     public function showEtudiant()
@@ -95,8 +99,8 @@ class EnseignantController extends Controller
         $nombreEtudiants = Etudiant::where('is_accepted', 1)->count();
         $id = Auth::guard('enseignant')->user()->id;
         $enseignants = Enseignant::findOrFail($id);
-        $etudiants=Etudiant::all();
-        return view('Enseignant.etudiant.liste',['enseignants'=>$enseignants,'etudiants'=>$etudiants,'nombreEtudiants'=>$nombreEtudiants]);
+        $etudiants = Etudiant::all();
+        return view('Enseignant.etudiant.liste', ['enseignants' => $enseignants, 'etudiants' => $etudiants, 'nombreEtudiants' => $nombreEtudiants]);
     }
 
     public function showClasses()
@@ -124,40 +128,12 @@ class EnseignantController extends Controller
             $cours->ens_id = $enseignant->id;
             $cours->classe_id = $request->class_id;
             $cours->save();
-            Alert::success('Congrats', 'You\'ve Successfully Registered');
+
+            event(new \App\Events\TestNotification('This is testing data'));
             return redirect()->route('enseignant.cours');
-        } catch
-        (Exception $exception) {
+        } catch (Exception $exception) {
             dd($exception);
         }
-    }
-
-    protected function createFolders($class_id, $path)
-    {
-        if (!file_exists(public_path() . "/files")) {
-            mkdir(public_path() . "/files");
-        }
-        $departements = Departement::all();
-        foreach ($departements as $dep) {
-            if (!file_exists(public_path() . "/files/{$dep->nom}")) {
-                mkdir(public_path() . "/files/{$dep->nom}");
-                foreach ($dep->Classes as $class) {
-                    if (!file_exists(public_path() . "/files/{$dep->nom}/{$class->nom}")) {
-                        mkdir(public_path() . "/files/{$dep->nom}/{$class->nom}");
-                    }
-                }
-            }
-        }
-        $myClass = Classe::find($class_id);
-        $myDep = $myClass->Departement->nom;
-        if (!file_exists(public_path() . "/files/{$myDep}/{$myClass->nom}/{$path}")) {
-            $data = "files/{$myDep}/{$myClass->nom}/{$path}";
-            mkdir(public_path() . "/files/{$myDep}/{$myClass->nom}/{$path}");
-        } else {
-            $data = "files/{$myDep}/{$myClass->nom}/{$path}";
-
-        }
-        return $data;
     }
 
     public function store(Request $request)
@@ -202,9 +178,7 @@ class EnseignantController extends Controller
 
     public function updateStatus(Request $request)
     {
-        $this->validate($request, [
-            'is_active' => 'required',
-        ]);
+        $this->validate($request, ['is_active' => 'required',]);
         $enseignant = Enseignant::find($request->id);
         $password = Enseignant::generatepassword();
         $enseignant->is_active = $request->is_active;
@@ -224,6 +198,7 @@ class EnseignantController extends Controller
             return ['response' => 'success', 'message' => 'Status updated successfully', 'id' => $request->id, 'status' => $status];
         }
     }
+
     public function logout()
     {
         Session::flush();
@@ -232,5 +207,33 @@ class EnseignantController extends Controller
 
         return redirect()->route('admin.login');
 
+    }
+
+    protected function createFolders($class_id, $path)
+    {
+        if (!file_exists(public_path() . "/files")) {
+            mkdir(public_path() . "/files");
+        }
+        $departements = Departement::all();
+        foreach ($departements as $dep) {
+            if (!file_exists(public_path() . "/files/{$dep->nom}")) {
+                mkdir(public_path() . "/files/{$dep->nom}");
+                foreach ($dep->Classes as $class) {
+                    if (!file_exists(public_path() . "/files/{$dep->nom}/{$class->nom}")) {
+                        mkdir(public_path() . "/files/{$dep->nom}/{$class->nom}");
+                    }
+                }
+            }
+        }
+        $myClass = Classe::find($class_id);
+        $myDep = $myClass->Departement->nom;
+        if (!file_exists(public_path() . "/files/{$myDep}/{$myClass->nom}/{$path}")) {
+            $data = "files/{$myDep}/{$myClass->nom}/{$path}";
+            mkdir(public_path() . "/files/{$myDep}/{$myClass->nom}/{$path}");
+        } else {
+            $data = "files/{$myDep}/{$myClass->nom}/{$path}";
+
+        }
+        return $data;
     }
 }

@@ -3,20 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EtudiantRequest;
+use App\Models\Classe;
+use App\Models\Cours;
+use App\Models\Departement;
 use App\Models\Etudiant;
+use App\Models\StudentClassroom;
 use App\Models\VerifyEmail;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
+use JetBrains\PhpStorm\Deprecated;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class EtudiantController extends Controller
 {
     public function index()
     {
+        $admin= Auth::guard('admin')->user();
         $etudiants = Etudiant::where('verified',1)->where('is_accepted',0)->get();
-        return view('Admin.etudiant.listeAttente',['etudiants'=>$etudiants]);
+        return view('Admin.etudiant.listeAttente',['etudiants'=>$etudiants, 'admin'=>$admin]);
     }
     public function updateStatus(Request $request)
     {
@@ -54,8 +62,9 @@ class EtudiantController extends Controller
     }
     public function show()
     {
+        $admin= Auth::guard('admin')->user();
         $etudiants = Etudiant::where('is_accepted',1)->get();
-        return view('Admin.etudiant.EtudiantAccepte',['etudiants'=>$etudiants]);
+        return view('Admin.etudiant.EtudiantAccepte',['etudiants'=>$etudiants, 'admin'=>$admin]);
     }
 
     public function update($id)
@@ -72,7 +81,9 @@ class EtudiantController extends Controller
 
     public function signIN2()
     {
-        return view('Auth.register');
+        $departements= Departement::all();
+        $classes=Classe::all();
+        return view('Auth.register',['departements'=>$departements,'$classes'=>$classes]);
     }
 
     function verify($token)
@@ -108,15 +119,26 @@ class EtudiantController extends Controller
             $user->gouvernorat = $request->gouvernorat;
             $user->save();
             if ($user->save()) {
-                $this->genrateToken($user->id);
-                return redirect()->route('admin.login');
+            if ($request->class_ids) {
+                foreach ($request->class_ids as $class_id) {
+
+                    $classroom = Classe::find($class_id);
+                    $etudiant_classroom = new StudentClassroom();
+                    $etudiant_classroom->class_id = $class_id;
+                    $etudiant_classroom->dep_id = $classroom->dep_id;
+                    $etudiant_classroom->etudiant_id = $user->id;
+                    $etudiant_classroom->save();
+
+                    $this->genrateToken($user->id);
+                    return redirect()->route('admin.login');
+                }
+            }
 
             }
         } catch (Exception $exception) {
             dd($exception);
         }
     }
-
     //formulaire de pré-inscription
     public function genrateToken($id)
     {
@@ -137,5 +159,20 @@ class EtudiantController extends Controller
     public function tableau()
     {
         return view('Etudiant.dashboard');
+    }
+    public function showCours()
+    {
+        $cours = Cours::all();
+
+        return view('Etudiant.Cours.liste', ['cours' => $cours]);
+    }
+    public function logout()
+    {
+        Session::flush();
+
+        Auth::logout();
+
+        return redirect()->route('admin.login');
+
     }
 }
